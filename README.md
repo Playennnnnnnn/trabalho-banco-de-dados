@@ -1,27 +1,55 @@
-# Projeto: Banco de Dados para Loja Online
+# Projeto: Banco de Dados para Farmácia de Manipulação
 
-**Objetivo Geral:** Criar a estrutura de dados para gerenciar clientes, produtos e os pedidos realizados em um e-commerce.
-**Público-Alvo:** Administradores da loja que precisam controlar o estoque e o histórico de compras dos usuários.
+**Objetivo Geral:** Criar uma estrutura relacional para gerenciar o fluxo de prescrições médicas, conectando os dados dos pacientes aos médicos, e controlando as ordens de manipulação, fórmulas, matérias-primas e seus respectivos lotes.
+**Público-Alvo:** Farmacêuticos, técnicos de laboratório e atendentes que precisam rastrear a origem da receita até o controle de qualidade do lote utilizado.
 
 ## Modelo de Dados (Diagrama ER)
+
 ```mermaid
 erDiagram
-    CLIENTES ||--o{ PEDIDOS : faz
-    PRODUTOS ||--o{ PEDIDOS : "está no"
-    
-    CLIENTES {
-        int id_cliente PK
-        string nome
-        string email
+    PACIENTE {
+        varchar cpf PK
+        date nascimento
+        varchar telefone
+        varchar endereco
+        varchar alergias
     }
-    PRODUTOS {
-        int id_produto PK
-        string nome_produto
-        float preco
+    MEDICO {
+        int id_medico PK
+        varchar nome
+        varchar crm UK
+        varchar especialidade
+        varchar telefone
     }
-    PEDIDOS {
-        int id_pedido PK
-        int id_cliente FK
-        int id_produto FK
-        date data_compra
+    MATERIA_PRIMA {
+        int id_materia_prima PK
+        varchar nome_cientifico
+        varchar nome_comercial
+        decimal quantidade
+        varchar composicao
     }
+    LOTE {
+        int id_lote PK
+        date fabricacao
+        date validade
+        decimal quantidade
+    }
+    FORMULA {
+        int id_formula PK
+        varchar receita
+        varchar uso
+        varchar imagem
+    }
+    ORDEM {
+        int id_ordem PK
+        varchar receita
+        date entrega
+        varchar forma
+        varchar producao
+    }
+
+    PACIENTE ||--o{ MEDICO : consulta
+    MEDICO ||--o{ ORDEM : prescreve
+    ORDEM ||--o{ FORMULA : utiliza
+    FORMULA ||--o{ MATERIA_PRIMA : utiliza
+    MATERIA_PRIMA ||--o{ LOTE : possui
